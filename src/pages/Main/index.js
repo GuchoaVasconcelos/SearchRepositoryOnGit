@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { FaGithubAlt, FaPlus } from "react-icons/fa";
 import { Container, Form, SubmitButton } from "./styles";
 
+import API from "../../services/api";
+
 export default class Main extends Component {
   state = {
     newRepo: "",
@@ -11,9 +13,12 @@ export default class Main extends Component {
     this.setState({ newRepo: e.target.value });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(this.state.newRepo);
+    const { newRepo } = this.state;
+    const response = await API.get(`/repos/${newRepo}`);
+
+    console.log(response.data);
   };
 
   render() {
