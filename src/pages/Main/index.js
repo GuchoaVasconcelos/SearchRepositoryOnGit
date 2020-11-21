@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FaGithubAlt, FaPlus } from "react-icons/fa";
+import { FaGithubAlt, FaPlus, FaSpinner } from "react-icons/fa";
 import { Container, Form, SubmitButton } from "./styles";
 
 import API from "../../services/api";
@@ -7,6 +7,8 @@ import API from "../../services/api";
 export default class Main extends Component {
   state = {
     newRepo: "",
+    repositories: [],
+    loading: false,
   };
 
   handleInputChange = (e) => {
@@ -15,14 +17,23 @@ export default class Main extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { newRepo } = this.state;
+    this.setState({loading:true});
+
+    const { newRepo, repositories } = this.state;
     const response = await API.get(`/repos/${newRepo}`);
 
     console.log(response.data);
+
+    const data = {
+      name: response.data.full_name,
+      id: response.data.id,
+    }
+
+    this.setState({newRepo: '', repositories: [...repositories, data], loading:false})
   };
 
   render() {
-    const { newRepo } = this.state;
+    const { newRepo, loading } = this.state;
 
     return (
       <Container>
@@ -39,8 +50,9 @@ export default class Main extends Component {
             onChange={this.handleInputChange}
           />
 
-          <SubmitButton>
-            <FaPlus color="#FFF" size={14} />
+          <SubmitButton loading={loading}>
+            {loading ? <FaSpinner color="#FFF" size={14} /> : <FaPlus color="#FFF" size={14} /> }
+
           </SubmitButton>
         </Form>
       </Container>
