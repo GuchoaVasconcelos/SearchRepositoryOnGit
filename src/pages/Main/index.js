@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { FaGithubAlt, FaPlus, FaSpinner } from "react-icons/fa";
-import { Container, Form, SubmitButton } from "./styles";
+import { Container, Form, SubmitButton, List } from "./styles";
 
 import API from "../../services/api";
 
 export default class Main extends Component {
+  // eslint-disable-next-line react/state-in-constructor
   state = {
     newRepo: "",
     repositories: [],
@@ -17,7 +18,7 @@ export default class Main extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    this.setState({loading:true});
+    this.setState({ loading: true });
 
     const { newRepo, repositories } = this.state;
     const response = await API.get(`/repos/${newRepo}`);
@@ -27,13 +28,17 @@ export default class Main extends Component {
     const data = {
       name: response.data.full_name,
       id: response.data.id,
-    }
+    };
 
-    this.setState({newRepo: '', repositories: [...repositories, data], loading:false})
+    this.setState({
+      newRepo: "",
+      repositories: [...repositories, data],
+      loading: false,
+    });
   };
 
   render() {
-    const { newRepo, loading } = this.state;
+    const { newRepo, loading, repositories } = this.state;
 
     return (
       <Container>
@@ -51,10 +56,22 @@ export default class Main extends Component {
           />
 
           <SubmitButton loading={loading}>
-            {loading ? <FaSpinner color="#FFF" size={14} /> : <FaPlus color="#FFF" size={14} /> }
-
+            {loading ? (
+              <FaSpinner color="#FFF" size={14} />
+            ) : (
+              <FaPlus color="#FFF" size={14} />
+            )}
           </SubmitButton>
         </Form>
+
+        <List>
+          {repositories.map((repository) => (
+            <li key={repository.id}>
+              <span> {repository.name} </span>
+              <a href="/">Detalhes</a>
+            </li>
+          ))}
+        </List>
       </Container>
     );
   }
