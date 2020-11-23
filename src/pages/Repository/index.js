@@ -6,6 +6,7 @@ import Container from "../../components/Container/index";
 import { Loading, Owner, IssueList } from "./styles";
 
 class Repository extends Component {
+  // eslint-disable-next-line react/static-property-placement
   static propTypes = {
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -14,6 +15,7 @@ class Repository extends Component {
     }).isRequired,
   };
 
+  // eslint-disable-next-line react/state-in-constructor
   state = {
     repository: {},
     issues: [],
